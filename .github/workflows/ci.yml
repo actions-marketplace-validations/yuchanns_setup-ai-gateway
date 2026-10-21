@@ -1,0 +1,25 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gateway:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./
+        id: gateway
+      - name: Test APIs
+        run: node tests/api.mjs "${{ steps.gateway.outputs.model }}"
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: test-results
+          path: .artifacts/api-results.json
+          include-hidden-files: true
+          if-no-files-found: warn
