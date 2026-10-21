@@ -1,0 +1,37 @@
+name: Setup AI gateway
+description: Run a local model behind a Magpie API gateway
+author: yuchanns
+branding:
+  icon: cpu
+  color: purple
+
+inputs:
+  model:
+    description: Hugging Face repository containing the GGUF model
+    default: unsloth/Qwen3.5-4B-GGUF
+  model-file:
+    description: GGUF file in the model repository
+    default: Qwen3.5-4B-Q4_K_M.gguf
+  port:
+    description: Gateway port on the runner loopback interface
+    default: '3425'
+  threads:
+    description: CPU threads for inference
+    default: '4'
+  context-size:
+    description: Model context size
+    default: '32768'
+
+outputs:
+  base-url:
+    description: Gateway origin without an API path
+  api-key:
+    description: API key for this job's gateway
+  model:
+    description: Model name accepted by the gateway
+
+runs:
+  using: node24
+  main: setup.mjs
+  post: cleanup.mjs
+  post-if: always()
